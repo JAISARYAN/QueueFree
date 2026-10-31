@@ -3,6 +3,7 @@
  */
 
 export * from "./auth";
+export * from "./clinical";
 
 export type UserRole =
   | "PATIENT"
@@ -64,39 +65,6 @@ export interface HealthCheckResponse {
       provider: string;
     };
   };
-}
-
-export interface Hospital {
-  id: string;
-  name: string;
-  code: string;
-  city: string;
-  state: string;
-  contactEmail: string;
-  contactPhone: string;
-  isActive: boolean;
-}
-
-export interface Department {
-  id: string;
-  hospitalId: string;
-  name: string;
-  code: string;
-  floorLocation?: string;
-  isActive: boolean;
-}
-
-export interface Doctor {
-  id: string;
-  userId: string;
-  hospitalId: string;
-  departmentId: string;
-  fullName: string;
-  specialization: string;
-  roomNumber?: string;
-  defaultConsultationMinutes: number;
-  maxDailyPatients: number;
-  isActive: boolean;
 }
 
 export type TokenState =

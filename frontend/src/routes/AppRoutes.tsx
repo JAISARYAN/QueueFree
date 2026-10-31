@@ -15,6 +15,7 @@ import { NotFoundPage } from "@/pages/public/NotFoundPage";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { PatientDashboardPage } from "@/pages/patient/PatientDashboardPage";
+import { HospitalDirectoryPage } from "@/pages/patient/HospitalDirectoryPage";
 import { DoctorDashboardPage } from "@/pages/doctor/DoctorDashboardPage";
 import { ReceptionistDashboardPage } from "@/pages/receptionist/ReceptionistDashboardPage";
 import { HospitalAdminDashboardPage } from "@/pages/admin/HospitalAdminDashboardPage";
@@ -47,6 +48,7 @@ export const AppRoutes: React.FC = () => {
         >
           <Route path="/patient" element={<PatientDashboardLayout />}>
             <Route path="dashboard" element={<PatientDashboardPage />} />
+            <Route path="hospitals" element={<HospitalDirectoryPage />} />
             <Route index element={<Navigate to="/patient/dashboard" replace />} />
           </Route>
         </Route>
