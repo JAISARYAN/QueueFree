@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Activity,
-  Clock,
   Building2,
   Users,
-  CalendarCheck,
   Server,
   Database,
   ArrowRight,
   CheckCircle2,
   AlertCircle,
   RefreshCw,
+  Sparkles,
+  Stethoscope,
+  Ticket,
 } from "lucide-react";
 import { apiClient } from "@/services/api/client";
+import { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, Badge } from "@/components/ui";
 import type { HealthCheckResponse } from "@/types";
 
 export const HomePage: React.FC = () => {
@@ -41,262 +44,282 @@ export const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Hero Section */}
-      <section className="text-center py-10 sm:py-16">
+      <section className="text-center py-10 sm:py-16 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold uppercase tracking-wider mb-6"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-900 dark:bg-teal-950/80 dark:border-teal-800 dark:text-teal-300 text-xs font-semibold mb-6 shadow-xs"
         >
-          <Activity className="h-4 w-4 text-sky-600" />
-          QueueFree Healthcare Platform
+          <Activity className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+          QueueFree Healthcare Technology Platform
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto"
+          className="text-4xl sm:text-6xl font-extrabold tracking-tight text-navy-900 dark:text-white max-w-4xl mx-auto"
         >
-          SKIP THE LINE. <span className="text-sky-600">SAVE YOUR TIME.</span>
+          SKIP THE LINE. <br />
+          <span className="text-teal-600 dark:text-teal-400">SAVE YOUR TIME.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed"
+          className="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed"
         >
           Smarter queues. Faster care. Better healthcare experiences. Unified
           multi-hospital OPD appointment and intelligent queue management.
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-4"
+        >
+          <Link to="/design-system">
+            <Button
+              variant="teal"
+              size="lg"
+              leftIcon={<Sparkles className="h-4 w-4" />}
+              rightIcon={<ArrowRight className="h-4 w-4" />}
+            >
+              Explore UI Design System
+            </Button>
+          </Link>
+          <Link to="/patient/dashboard">
+            <Button variant="outline" size="lg">
+              Open Patient Portal
+            </Button>
+          </Link>
+        </motion.div>
       </section>
 
       {/* Backend & Environment Live Diagnostic Card */}
-      <section className="my-10">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-            <div>
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Server className="h-5 w-5 text-sky-600" />
-                Backend System & Database Diagnostic
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Verifies REST API handshake and database connectivity via{" "}
-                <code className="text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded font-mono text-xs">
-                  /api/v1/health/
-                </code>
-              </p>
-            </div>
-
-            <button
-              onClick={fetchHealthStatus}
-              disabled={loading}
-              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors disabled:opacity-50"
-            >
-              <RefreshCw
-                className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
-              />
-              Refresh Check
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            {/* API Status */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                API Service Liveness
-              </span>
-              <div className="mt-2 flex items-center gap-2">
-                {loading ? (
-                  <span className="text-sm font-medium text-slate-500">
-                    Checking...
-                  </span>
-                ) : health ? (
-                  <>
-                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                    <span className="text-sm font-bold text-slate-900">
-                      {health.service} ({health.version})
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <AlertCircle className="h-5 w-5 text-amber-500" />
-                    <span className="text-sm font-medium text-amber-700">
-                      Unreachable ({error || "Offline"})
-                    </span>
-                  </>
-                )}
+      <section>
+        <Card className="border-slate-200 dark:border-navy-800 shadow-healthcare">
+          <CardHeader className="border-b border-slate-100 dark:border-navy-800 pb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Server className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                  Backend System & Observability Diagnostic
+                </CardTitle>
+                <CardDescription>
+                  Verifies REST API handshake and database connectivity via{" "}
+                  <code className="text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/80 px-1.5 py-0.5 rounded font-mono text-xs">
+                    /api/v1/health/
+                  </code>
+                </CardDescription>
               </div>
-            </div>
 
-            {/* Overall Health */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                System Status
-              </span>
-              <div className="mt-2 flex items-center gap-2">
-                {loading ? (
-                  <span className="text-sm font-medium text-slate-500">
-                    Checking...
-                  </span>
-                ) : health ? (
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
-                      health.status === "healthy"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-amber-100 text-amber-800"
-                    }`}
-                  >
-                    {health.status}
-                  </span>
-                ) : (
-                  <span className="text-sm text-slate-400">Offline</span>
-                )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchHealthStatus}
+                disabled={loading}
+                leftIcon={
+                  <RefreshCw
+                    className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
+                  />
+                }
+              >
+                Refresh Telemetry
+              </Button>
+            </div>
+          </CardHeader>
+
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* API Status */}
+              <div className="p-4 rounded-xl border border-slate-100 bg-slate-50 dark:border-navy-800 dark:bg-navy-950/60">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  API Service Liveness
+                </span>
+                <div className="mt-2 flex items-center gap-2">
+                  {loading ? (
+                    <span className="text-sm font-medium text-slate-500">
+                      Checking...
+                    </span>
+                  ) : health ? (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                      <span className="text-sm font-bold text-navy-900 dark:text-white">
+                        {health.service} ({health.version})
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />
+                      <span className="text-sm font-medium text-amber-700">
+                        Unreachable ({error || "Offline"})
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Database Engine */}
-            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50">
-              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Database className="h-3.5 w-3.5 text-slate-500" />
-                PostgreSQL Status
-              </span>
-              <div className="mt-2">
-                {loading ? (
-                  <span className="text-sm font-medium text-slate-500">
-                    Inspecting...
-                  </span>
-                ) : health?.checks?.database ? (
-                  <div>
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                        health.checks.database.status === "connected"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-rose-100 text-rose-800"
-                      }`}
+              {/* Overall Health */}
+              <div className="p-4 rounded-xl border border-slate-100 bg-slate-50 dark:border-navy-800 dark:bg-navy-950/60">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  System Health State
+                </span>
+                <div className="mt-2 flex items-center gap-2">
+                  {loading ? (
+                    <span className="text-sm font-medium text-slate-500">
+                      Checking...
+                    </span>
+                  ) : health ? (
+                    <Badge
+                      variant={health.status === "healthy" ? "success" : "warning"}
+                      size="md"
+                      dot
                     >
-                      {health.checks.database.status}
+                      {health.status.toUpperCase()}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary">OFFLINE</Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Database Engine */}
+              <div className="p-4 rounded-xl border border-slate-100 bg-slate-50 dark:border-navy-800 dark:bg-navy-950/60">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                  <Database className="h-3.5 w-3.5 text-slate-500" />
+                  PostgreSQL Status
+                </span>
+                <div className="mt-2">
+                  {loading ? (
+                    <span className="text-sm font-medium text-slate-500">
+                      Inspecting...
                     </span>
-                    <p className="text-[11px] text-slate-500 mt-1 font-mono">
-                      {health.checks.database.engine.replace(
-                        "django.db.backends.",
-                        ""
-                      )}{" "}
-                      @ {health.checks.database.host}:
-                      {health.checks.database.port}
-                    </p>
-                  </div>
-                ) : (
-                  <span className="text-xs text-slate-400">No telemetry</span>
-                )}
+                  ) : health?.checks?.database ? (
+                    <div>
+                      <Badge
+                        variant={
+                          health.checks.database.status === "connected"
+                            ? "success"
+                            : "error"
+                        }
+                        size="sm"
+                        dot
+                      >
+                        {health.checks.database.status}
+                      </Badge>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-mono truncate">
+                        {health.checks.database.engine.replace(
+                          "django.db.backends.",
+                          ""
+                        )}{" "}
+                        @ {health.checks.database.host}:{health.checks.database.port}
+                      </p>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400">No telemetry</span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Stakeholder Personas & Scope Overview */}
-      <section className="my-12">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Multi-Stakeholder Healthcare Architecture
+      <section className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-navy-900 dark:text-white tracking-tight">
+            Role-Governed Healthcare Architecture
           </h2>
-          <p className="text-sm text-slate-500 mt-2">
-            Role-governed portals connecting clinical operations and patient care
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+            Tailored consoles for every tier of the hospital outpatient ecosystem
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-300 transition-colors">
-            <div className="h-10 w-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center mb-4">
-              <Users className="h-5 w-5" />
+          <Link
+            to="/patient/dashboard"
+            className="group block rounded-2xl border border-slate-200/80 bg-white p-6 shadow-healthcare hover:-translate-y-1 hover:border-teal-500 transition-all dark:border-navy-800 dark:bg-navy-900"
+          >
+            <div className="h-12 w-12 rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+              <Users className="h-6 w-6" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+            <h3 className="font-bold text-navy-900 dark:text-white text-base">
               Patient Portal
             </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Find specialists, book advance OPD slots, track real-time queue
-              tokens, and receive automated delay alerts.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              Find specialists, reserve OPD slots, track live queue positions, and arrive just-in-time.
             </p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-300 transition-colors">
-            <div className="h-10 w-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center mb-4">
-              <CalendarCheck className="h-5 w-5" />
+            <div className="mt-4 flex items-center text-xs font-semibold text-teal-600 dark:text-teal-400 gap-1">
+              <span>Enter Portal</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+          </Link>
+
+          <Link
+            to="/doctor/dashboard"
+            className="group block rounded-2xl border border-slate-200/80 bg-white p-6 shadow-healthcare hover:-translate-y-1 hover:border-teal-500 transition-all dark:border-navy-800 dark:bg-navy-900"
+          >
+            <div className="h-12 w-12 rounded-xl bg-navy-50 text-navy-900 dark:bg-navy-800 dark:text-slate-200 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+              <Stethoscope className="h-6 w-6" />
+            </div>
+            <h3 className="font-bold text-navy-900 dark:text-white text-base">
               Doctor Console
             </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Live consultation queues, call-next token sequences, session pause/break
-              controls, and availability roster scheduling.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              Conduct consultations, call next patient tokens, manage shift quotas, and report clinic delays.
             </p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-300 transition-colors">
-            <div className="h-10 w-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center mb-4">
-              <Clock className="h-5 w-5" />
+            <div className="mt-4 flex items-center text-xs font-semibold text-teal-600 dark:text-teal-400 gap-1">
+              <span>Enter Console</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+          </Link>
+
+          <Link
+            to="/receptionist/dashboard"
+            className="group block rounded-2xl border border-slate-200/80 bg-white p-6 shadow-healthcare hover:-translate-y-1 hover:border-teal-500 transition-all dark:border-navy-800 dark:bg-navy-900"
+          >
+            <div className="h-12 w-12 rounded-xl bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-400 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+              <Ticket className="h-6 w-6" />
+            </div>
+            <h3 className="font-bold text-navy-900 dark:text-white text-base">
               Reception Desk
             </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Arriving patient check-in, walk-in token issuance, emergency triage
-              prioritization, and fee verification.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              Arriving patient check-in, walk-in token issuance, priority triage, and waiting hall TV board.
             </p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-300 transition-colors">
-            <div className="h-10 w-10 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center mb-4">
-              <Building2 className="h-5 w-5" />
+            <div className="mt-4 flex items-center text-xs font-semibold text-teal-600 dark:text-teal-400 gap-1">
+              <span>Enter Desk</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+          </Link>
+
+          <Link
+            to="/admin/dashboard"
+            className="group block rounded-2xl border border-slate-200/80 bg-white p-6 shadow-healthcare hover:-translate-y-1 hover:border-teal-500 transition-all dark:border-navy-800 dark:bg-navy-900"
+          >
+            <div className="h-12 w-12 rounded-xl bg-slate-100 text-slate-800 dark:bg-navy-800 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+              <Building2 className="h-6 w-6" />
+            </div>
+            <h3 className="font-bold text-navy-900 dark:text-white text-base">
               Hospital Admin
             </h3>
-            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Department catalog, doctor quota caps, OPD shift rules, wait-time
-              analytics, and operational compliance audit trails.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              Clinical departments, doctor rostering, quota rules, wait-time analytics, and compliance audits.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Architecture Highlights */}
-      <section className="my-12 rounded-2xl bg-slate-900 text-white p-8 sm:p-10">
-        <div className="max-w-3xl">
-          <span className="text-xs font-semibold uppercase tracking-wider text-sky-400">
-            Phase 1 Foundation Complete
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold mt-2">
-            Engineered for Production Resilience
-          </h2>
-          <p className="text-slate-300 mt-3 text-sm leading-relaxed">
-            QueueFree employs a decoupled React + Vite SPA on the frontend and a
-            modular Django REST Framework monolith backed by PostgreSQL 17 on the
-            backend, ready for future real-time Django Channels and Redis queue
-            telemetry.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-4 text-xs">
-            <div className="flex items-center gap-1.5 text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-              <ArrowRight className="h-3.5 w-3.5 text-sky-400" />
-              <span>Strict TypeScript</span>
+            <div className="mt-4 flex items-center text-xs font-semibold text-teal-600 dark:text-teal-400 gap-1">
+              <span>Enter Admin</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </div>
-            <div className="flex items-center gap-1.5 text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-              <ArrowRight className="h-3.5 w-3.5 text-sky-400" />
-              <span>Tailwind CSS</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-              <ArrowRight className="h-3.5 w-3.5 text-sky-400" />
-              <span>OpenAPI 3.0 / Swagger</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-              <ArrowRight className="h-3.5 w-3.5 text-sky-400" />
-              <span>Zero Hardcoded Secrets</span>
-            </div>
-          </div>
+          </Link>
         </div>
       </section>
     </div>

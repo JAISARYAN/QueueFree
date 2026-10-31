@@ -4,14 +4,126 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --primary: 201 96% 32%;
-    --primary-foreground: 210 40% 98%;
+    /* Core brand palette */
+    --color-navy: #102A43;
+    --color-teal: #0D9488;
+    --color-mint: #CCFBF1;
+    --color-white: #FFFFFF;
+    --color-slate: #64748B;
+
+    /* Semantic Tokens — Light Mode */
+    --bg-app: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #FFFFFF;
+    --bg-surface-hover: #F1F5F9;
+    --bg-surface-subtle: #F8FAFC;
+
+    --text-primary: #102A43;
+    --text-secondary: #334E68;
+    --text-muted: #627D98;
+    --text-inverse: #FFFFFF;
+
+    --border-subtle: #F0F4F8;
+    --border-default: #E2E8F0;
+    --border-strong: #CBD5E1;
+
+    --primary: #0D9488;
+    --primary-hover: #0F766E;
+    --primary-light: #CCFBF1;
+    --primary-foreground: #FFFFFF;
+
+    --secondary: #102A43;
+    --secondary-hover: #243B53;
+    --secondary-light: #E0E8F0;
+    --secondary-foreground: #FFFFFF;
+
+    --success: #059669;
+    --success-light: #ECFDF5;
+    --success-foreground: #FFFFFF;
+
+    --warning: #D97706;
+    --warning-light: #FFFBEB;
+    --warning-foreground: #FFFFFF;
+
+    --error: #DC2626;
+    --error-light: #FEF2F2;
+    --error-foreground: #FFFFFF;
+
+    --info: #0284C7;
+    --info-light: #F0F9FF;
+    --info-foreground: #FFFFFF;
+
+    --ring: #0D9488;
+  }
+
+  .dark {
+    /* Semantic Tokens — Dark Mode */
+    --bg-app: #0B1320;
+    --bg-surface: #101E30;
+    --bg-surface-elevated: #16263D;
+    --bg-surface-hover: #1E334D;
+    --bg-surface-subtle: #0E1828;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --text-inverse: #102A43;
+
+    --border-subtle: #16263D;
+    --border-default: #243B53;
+    --border-strong: #334E68;
+
+    --primary: #14B8A6;
+    --primary-hover: #2DD4BF;
+    --primary-light: #134E4A;
+    --primary-foreground: #0B1320;
+
+    --secondary: #334E68;
+    --secondary-hover: #486581;
+    --secondary-light: #102A43;
+    --secondary-foreground: #F8FAFC;
+
+    --success: #10B981;
+    --success-light: #064E3B;
+    --success-foreground: #FFFFFF;
+
+    --warning: #F59E0B;
+    --warning-light: #78350F;
+    --warning-foreground: #FFFFFF;
+
+    --error: #EF4444;
+    --error-light: #7F1D1D;
+    --error-foreground: #FFFFFF;
+
+    --info: #38BDF8;
+    --info-light: #0C4A6E;
+    --info-foreground: #FFFFFF;
+
+    --ring: #14B8A6;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom healthcare scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #334E68;
   }
 }
