@@ -2,6 +2,8 @@
  * QueueFree Core System Interfaces & Data Types
  */
 
+export * from "./auth";
+
 export type UserRole =
   | "PATIENT"
   | "DOCTOR"

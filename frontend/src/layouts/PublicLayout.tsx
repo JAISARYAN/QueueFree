@@ -3,9 +3,13 @@ import { Link, Outlet } from "react-router-dom";
 import { Logo } from "@/components/common/Logo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { Activity, Shield, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { getDashboardPathForRole } from "@/routes/roleNavigation";
+import { Activity, Shield, Sparkles, LayoutDashboard } from "lucide-react";
 
 export const PublicLayout: React.FC = () => {
+  const { user, isAuthenticated } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-navy-900 dark:bg-navy-950 dark:text-slate-100 transition-colors">
       {/* Top Navbar */}
@@ -33,16 +37,30 @@ export const PublicLayout: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link to="/auth/login">
-              <Button variant="outline" size="sm">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/patient/dashboard">
-              <Button variant="teal" size="sm">
-                Patient Portal
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <Link to={getDashboardPathForRole(user?.role)}>
+                <Button
+                  variant="teal"
+                  size="sm"
+                  leftIcon={<LayoutDashboard className="h-4 w-4" />}
+                >
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/auth/login">
+                  <Button variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/auth/register">
+                  <Button variant="teal" size="sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>

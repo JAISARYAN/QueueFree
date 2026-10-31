@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Activity,
   Calendar,
@@ -14,13 +15,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export const PatientDashboardPage: React.FC = () => {
+  const { user } = useAuth();
+  const patientName = user?.first_name || "Patient";
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-navy-900 dark:text-white">
-            Welcome, Aarav
+            Welcome, {patientName}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Track your real-time outpatient queue status and booked consultations

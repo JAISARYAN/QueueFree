@@ -6,6 +6,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.1/topics/settings/
 """
 from pathlib import Path
+from datetime import timedelta
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "drf_spectacular",
     "apps.accounts",
@@ -134,6 +137,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Custom User Model
+AUTH_USER_MODEL = "accounts.User"
+
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = env.list(
     "CORS_ALLOWED_ORIGINS",
@@ -143,6 +149,12 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
@@ -151,6 +163,22 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
+}
+
+# SimpleJWT Authentication Configuration
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "TOKEN_OBTAIN_SERIALIZER": "apps.accounts.serializers.QueueFreeTokenObtainPairSerializer",
 }
 
 # OpenAPI 3.0 / Swagger (drf-spectacular) Configuration

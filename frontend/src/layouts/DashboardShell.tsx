@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Menu,
   X,
@@ -52,6 +53,18 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const activeDisplayName = user?.first_name
+    ? `${user.first_name} ${user.last_name}`.trim()
+    : user?.email || userDisplayName;
+  const activeEmail = user?.email || userEmail;
+
+  const handleSignOut = async () => {
+    await logout();
+    navigate("/auth/login", { replace: true });
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-navy-900 dark:bg-navy-950 dark:text-slate-100">
@@ -116,10 +129,10 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
         {/* User Profile Card at bottom of sidebar */}
         <div className="p-3 border-t border-slate-100 dark:border-navy-800">
           <div className="flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 dark:hover:bg-navy-800/60 transition-colors">
-            <Avatar name={userDisplayName} size="sm" status="online" />
+            <Avatar name={activeDisplayName} size="sm" status="online" />
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-navy-900 truncate dark:text-white">
-                {userDisplayName}
+                {activeDisplayName}
               </p>
               <div className="mt-0.5">
                 <Badge size="sm" variant={roleBadgeVariant}>
@@ -127,6 +140,14 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
                 </Badge>
               </div>
             </div>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-navy-800 transition-colors"
+              title="Sign Out"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </aside>
@@ -188,15 +209,23 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
 
               <div className="border-t border-slate-100 pt-4 dark:border-navy-800">
                 <div className="flex items-center gap-3">
-                  <Avatar name={userDisplayName} size="sm" status="online" />
+                  <Avatar name={activeDisplayName} size="sm" status="online" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold truncate dark:text-white">
-                      {userDisplayName}
+                      {activeDisplayName}
                     </p>
                     <p className="text-[10px] text-slate-400 truncate">
-                      {userEmail}
+                      {activeEmail}
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-500"
+                    title="Sign Out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -258,16 +287,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
             <Dropdown>
               <DropdownTrigger>
                 <div className="flex items-center gap-2 pl-2">
-                  <Avatar name={userDisplayName} size="sm" />
+                  <Avatar name={activeDisplayName} size="sm" />
                 </div>
               </DropdownTrigger>
               <DropdownMenu align="right">
                 <div className="px-3 py-2 border-b border-slate-100 dark:border-navy-800">
                   <p className="text-xs font-bold text-navy-900 dark:text-white">
-                    {userDisplayName}
+                    {activeDisplayName}
                   </p>
                   <p className="text-[11px] text-slate-500 truncate">
-                    {userEmail}
+                    {activeEmail}
                   </p>
                   <div className="mt-1.5">
                     <Badge size="sm" variant={roleBadgeVariant}>
@@ -285,6 +314,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({
                 <DropdownSeparator />
                 <DropdownItem
                   icon={<LogOut className="h-3.5 w-3.5" />}
+                  onClick={handleSignOut}
                   destructive
                 >
                   Sign Out

@@ -1,18 +1,53 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Input, PasswordInput, Button, AlertBanner } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { getDashboardPathForRole } from "@/routes/roleNavigation";
 import { LogIn } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
+  const { login } = useAuth();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Return to intended page if redirected by ProtectedRoute
+  const fromLocation = (location.state as { from?: Location })?.from?.pathname;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setNotice(
-      "Phase 2 establishes the visual UI design system and layout foundation. Authentication endpoints and session management will be implemented in Phase 3."
-    );
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const loggedUser = await login({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      addToast({
+        type: "success",
+        title: "Signed In Successfully",
+        message: `Welcome back, ${loggedUser.first_name || loggedUser.email}!`,
+      });
+
+      const destination = fromLocation || getDashboardPathForRole(loggedUser.role);
+      navigate(destination, { replace: true });
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Invalid email or password. Please verify credentials.";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -26,17 +61,17 @@ export const LoginPage: React.FC = () => {
         </p>
       </div>
 
-      {notice && (
+      {error && (
         <AlertBanner
-          type="info"
-          title="Phase 2 Visual Foundation"
-          message={notice}
+          type="error"
+          title="Authentication Failed"
+          message={error}
         />
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Email Address or Staff ID"
+          label="Email Address"
           type="email"
           placeholder="name@hospital.org"
           value={email}
@@ -64,7 +99,7 @@ export const LoginPage: React.FC = () => {
             href="#forgot-password"
             onClick={(e) => {
               e.preventDefault();
-              setNotice("Password recovery workflows will be activated in Phase 3.");
+              setError("Please contact your hospital administrator for password recovery assistance.");
             }}
             className="font-medium text-teal-600 hover:underline dark:text-teal-400"
           >
@@ -76,6 +111,7 @@ export const LoginPage: React.FC = () => {
           type="submit"
           variant="teal"
           className="w-full mt-2"
+          isLoading={isSubmitting}
           leftIcon={<LogIn className="h-4 w-4" />}
         >
           Sign In
@@ -85,10 +121,10 @@ export const LoginPage: React.FC = () => {
       <div className="pt-4 border-t border-slate-100 dark:border-navy-800 text-center text-xs text-slate-500">
         <span>Need to create a new patient account? </span>
         <Link
-          to="/"
+          to="/auth/register"
           className="font-semibold text-teal-600 hover:underline dark:text-teal-400"
         >
-          Return to Overview
+          Register Patient Account
         </Link>
       </div>
     </div>

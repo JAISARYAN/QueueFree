@@ -30,5 +30,6 @@ urlpatterns = [
     ),
 
     # Versioned API Foundation (/api/v1/)
+    path("api/v1/auth/", include("apps.accounts.urls", namespace="auth")),
     path("api/v1/", include("apps.core.urls", namespace="core")),
 ]

@@ -1,12 +1,14 @@
 import React from "react";
-import { ThemeProvider, ToastProvider } from "@/contexts";
+import { AuthProvider, ThemeProvider, ToastProvider } from "@/contexts";
 import { AppRoutes } from "@/routes/AppRoutes";
 
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <AppRoutes />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </ToastProvider>
     </ThemeProvider>
   );
